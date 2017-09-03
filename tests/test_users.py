@@ -141,3 +141,36 @@ class TestUserService(BaseTestCase):
             self.assertIn('user@example.com', data['data']['users'][0]['email'])
             self.assertIn('testuser2', data['data']['users'][1]['username'])
             self.assertIn('user2@example.com', data['data']['users'][1]['email'])
+
+    def test_get_users_html(self):
+        """Ensure we can retrieve all users in HTML"""
+        add_user('testuser', 'user@example.com')
+        add_user('testuser2', 'user2@example.com')
+        with self.client:
+            response = self.client.get('/users', headers={'Accept': 'text/html'})
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'<h1>All Users</h1>', response.data)
+            self.assertNotIn(b'<p>No users!</p>', response.data)
+            self.assertIn(b'<strong>testuser</strong>', response.data)
+            self.assertIn(b'<strong>testuser2</strong>', response.data)
+
+    def test_get_users_html_no_users(self):
+        """Ensure we get correct response when no users in HTML"""
+        with self.client:
+            response = self.client.get('/users', headers={'Accept': 'text/html'})
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'<h1>All Users</h1>', response.data)
+            self.assertIn(b'<p>No users!</p>', response.data)
+
+    def test_main_add_user(self):
+        """Ensure a new user can be added through the HTML form"""
+        with self.client:
+            response = self.client.post(
+                '/users',
+                data=dict(username='testuser', email='user@example.com'),
+                follow_redirects=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertIn(b'<h1>All Users</h1>', response.data)
+            self.assertNotIn(b'<p>No users!</p>', response.data)
+            self.assertIn(b'<strong>testuser</strong>', response.data)
