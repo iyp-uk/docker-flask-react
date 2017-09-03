@@ -1,13 +1,17 @@
 version: '2'
 services:
+  nginx:
+    build: nginx/.
+    restart: always
+    ports:
+      - "80:80"
+    links:
+      - app
   app:
     build: .
     ports:
       - "5000:5000"
-    volumes:
-      - .:/usr/src/app
     environment:
-      - APP_SETTINGS=app.config.DevelopmentConfig
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/app
     links:
       - postgres
