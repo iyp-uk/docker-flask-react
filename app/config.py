@@ -8,6 +8,7 @@ class BaseConfig:
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SECRET_KEY = 'my_precious'
 
 
 class DevelopmentConfig(BaseConfig):
