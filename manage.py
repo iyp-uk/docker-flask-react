@@ -1,8 +1,10 @@
 # manage.py
 from flask_script import Manager
-from app import app, db
 import unittest
 
+from app import create_app, db
+
+app = create_app()
 manager = Manager(app)
 
 
