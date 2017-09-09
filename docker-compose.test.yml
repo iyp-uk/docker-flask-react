@@ -2,6 +2,5 @@ version: '2.1'
 services:
   app:
     environment:
-      - APP_SETTINGS=app.config.ProductionConfig
+      - APP_SETTINGS=app.config.TestingConfig
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/app
-    command: gunicorn -b 0.0.0.0:5000 manage:app
