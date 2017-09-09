@@ -6,6 +6,10 @@ services:
 env:
   global:
     - DOCKER_COMPOSE_VERSION=1.14.0
+  matrix:
+    - COMPOSE_FILES=""
+    - COMPOSE_FILES="-f docker-compose.yml -f docker-compose.test.yml"
+    - COMPOSE_FILES="-f docker-compose.yml -f docker-compose.prod.yml"
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -14,10 +18,10 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 before_script:
-  - docker-compose up --build -d
+  - docker-compose ${COMPOSE_FILES} up --build -d
 
 script:
-  - docker-compose run app python manage.py test
+  - docker-compose ${COMPOSE_FILES} run app python manage.py test
 
 after_script:
-  - docker-compose down
+  - docker-compose ${COMPOSE_FILES} down
